@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
         - name: che-operator
-          image: quay.io/eclipse/che-operator:nightly
+          image: sleshchenko/che-operator:6.19.0
           ports:
           - containerPort: 60000
             name: metrics
