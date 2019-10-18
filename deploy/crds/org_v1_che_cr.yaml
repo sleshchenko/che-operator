@@ -24,7 +24,7 @@ spec:
     devfileRegistryImage: ''
     externalDevfileRegistry: true
     # image:tag used in plugin registry deployment
-    pluginRegistryImage: 'quay.io/eclipse/che-plugin-registry:6.19.0'
+    pluginRegistryImage: 'quay.io/eclipse/che-plugin-registry:9c87243' # it's https://github.com/eclipse/che-plugin-registry/releases/tag/registry-v2
     # defaults to `che`. When set to `codeready`, CodeReady Workspaces is deployed
     # the difference is in images, labels, exec commands
     cheFlavor: ''
