@@ -19,7 +19,7 @@ spec:
     # server image used in Che deployment
     cheImage: ''
     # tag of an image used in Che deployment
-    cheImageTag: '6.19.0'
+    cheImageTag: '6.19.6'
     # image:tag used in Devfile registry deployment
     devfileRegistryImage: ''
     externalDevfileRegistry: true
@@ -107,7 +107,7 @@ spec:
     # secret used in oAuthClient. Auto generated if left blank
     oAuthSecret: ''
     # image:tag used in Keycloak deployment
-    identityProviderImage: 'eclipse/che-keycloak:6.19.0'
+    identityProviderImage: 'eclipse/che-keycloak:6.19.6'
   k8s:
     # your global ingress domain
     ingressDomain: '192.168.99.101.nip.io'
