@@ -477,9 +477,6 @@ func (r *ReconcileChe) Reconcile(request reconcile.Request) (reconcile.Result, e
 		if err != nil {
 			return reconcile.Result{}, err
 		}
-		if cheFlavor != "codeready" {
-			pluginRegistryURL += "/v3"
-		}
 		instance.Status.PluginRegistryURL = pluginRegistryURL
 		if err := r.UpdateCheCRStatus(instance, "status: Plugin Registry URL", pluginRegistryURL); err != nil {
 			instance, _ = r.GetCR(request)
