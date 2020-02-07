@@ -16,6 +16,14 @@ metadata:
   name: eclipse-che
 spec:
   server:
+    sidecars:
+      - image: sleshchenko/next-dashboard:initial
+        pullPolicy: Always
+        memoryLimit: 512M
+        memoryRequst: 512M
+        RESTendpoint:
+          - port: 3813
+            path: /dashboard-next
     # server image used in Che deployment
     cheImage: ''
     # tag of an image used in Che deployment

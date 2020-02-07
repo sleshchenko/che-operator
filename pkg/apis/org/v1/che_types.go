@@ -215,6 +215,16 @@ type CheClusterSpecServer struct {
 	// Overrides the memory limit used in the Che server deployment. Defaults to 1Gi.
 	// +optional
 	ServerMemoryLimit string `json:"serverMemoryLimit,omitempty"`
+
+	// +optional
+	Sidecars []CheServerSidecar `json:"sidecars,omitempty"`
+}
+
+type CheServerSidecar struct {
+	Image string `json:"image,omitempty"`
+	MemoryLimit string `json:"memoryLimit,omitempty"`
+	MemoryRequest string `json:"memoryRequest,omitempty"`
+	PullPolicy corev1.PullPolicy `json:"pullPolicy,omitempty"`
 }
 
 // +k8s:openapi-gen=true
