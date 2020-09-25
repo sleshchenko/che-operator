@@ -14,6 +14,7 @@ package che
 import (
 	"context"
 	"fmt"
+	"github.com/eclipse/che-operator/pkg/deploy/dashboard"
 	"github.com/eclipse/che-operator/pkg/deploy/devfile-registry"
 	"github.com/eclipse/che-operator/pkg/deploy/gateway"
 	"github.com/eclipse/che-operator/pkg/deploy/identity-provider"
@@ -793,12 +794,23 @@ func (r *ReconcileChe) Reconcile(request reconcile.Request) (reconcile.Result, e
 	}
 
 	provisioned, err = plugin_registry.SyncPluginRegistryToCluster(deployContext, cheHost)
+
 	if !tests {
 		if !provisioned {
 			if err != nil {
 				logrus.Errorf("Error provisioning '%s' to cluster: %v", deploy.PluginRegistry, err)
 			}
 			return reconcile.Result{RequeueAfter: time.Second * 1}, err
+		}
+	}
+
+	provisioned, err = dashboard.SyncDashboardToCluster(deployContext, cheHost)
+	if !tests {
+		if !provisioned {
+			if err != nil {
+				logrus.Errorf("Error provisioning '%s' to cluster: %v", dashboard.Dashboard, err)
+			}
+			return reconcile.Result{Requeue: true}, err
 		}
 	}
 

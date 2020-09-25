@@ -51,8 +51,19 @@ func SyncRouteToCluster(
 	serviceName string,
 	servicePort int32,
 	additionalLabels string) (*routev1.Route, error) {
+	return SyncRouteWithPathToCluster(deployContext, name, host, "", serviceName, servicePort, additionalLabels)
+}
 
-	specRoute, err := GetSpecRoute(deployContext, name, host, serviceName, servicePort, additionalLabels)
+func SyncRouteWithPathToCluster(
+	deployContext *DeployContext,
+	name string,
+	host string,
+	path string,
+	serviceName string,
+	servicePort int32,
+	additionalLabels string) (*routev1.Route, error) {
+
+	specRoute, err := GetSpecRoute(deployContext, name, host, path, serviceName, servicePort, additionalLabels)
 	if err != nil {
 		return nil, err
 	}
@@ -129,6 +140,7 @@ func GetSpecRoute(
 	deployContext *DeployContext,
 	name string,
 	host string,
+	path string,
 	serviceName string,
 	servicePort int32,
 	additionalLabels string) (*routev1.Route, error) {
@@ -160,6 +172,7 @@ func GetSpecRoute(
 
 	route.Spec = routev1.RouteSpec{
 		Host: host,
+		Path: path,
 		To: routev1.RouteTargetReference{
 			Kind:   "Service",
 			Name:   serviceName,

@@ -543,10 +543,10 @@ func getSpecKeycloakDeployment(
 							},
 							Resources: corev1.ResourceRequirements{
 								Requests: corev1.ResourceList{
-									corev1.ResourceMemory: resource.MustParse("512Mi"),
+									corev1.ResourceMemory: resource.MustParse("256Mi"),
 								},
 								Limits: corev1.ResourceList{
-									corev1.ResourceMemory: resource.MustParse("2Gi"),
+									corev1.ResourceMemory: resource.MustParse("512Mi"),
 								},
 							},
 							ReadinessProbe: &corev1.Probe{

@@ -8,25 +8,28 @@ import (
 )
 
 func Expose(deployContext *deploy.DeployContext, cheHost string, endpointName string) (endpont string, done bool, err error) {
+	return ExposeWithHost(deployContext, cheHost, endpointName, "", "")
+}
+
+func ExposeWithHost(deployContext *deploy.DeployContext, cheHost string, serviceName string, host string, path string) (endpoint string, done bool, err error) {
 	exposureStrategy := util.GetServerExposureStrategy(deployContext.CheCluster, deploy.DefaultServerExposureStrategy)
 	var domain string
-	var endpoint string
 	if exposureStrategy == "multi-host" {
 		// this won't get used on openshift, because there we're intentionally let Openshift decide on the domain name
-		domain = endpointName + "-" + deployContext.CheCluster.Namespace + "." + deployContext.CheCluster.Spec.K8s.IngressDomain
+		domain = host + "-" + deployContext.CheCluster.Namespace + "." + deployContext.CheCluster.Spec.K8s.IngressDomain
 		endpoint = domain
 	} else {
 		domain = cheHost
-		endpoint = domain + "/" + endpointName
+		endpoint = domain + "/" + host
 	}
 
-	gatewayConfig := "che-gateway-route-" + endpointName
+	gatewayConfig := "che-gateway-route-" + serviceName
 	singleHostExposureType := deploy.GetSingleHostExposureType(deployContext.CheCluster)
 	useGateway := exposureStrategy == "single-host" && (util.IsOpenShift || singleHostExposureType == "gateway")
 
 	if !util.IsOpenShift {
 		if useGateway {
-			cfg := gateway.GetGatewayRouteConfig(deployContext, gatewayConfig, "/"+endpointName, 10, "http://"+endpointName+":8080", true)
+			cfg := gateway.GetGatewayRouteConfig(deployContext, gatewayConfig, "/"+host, 10, "http://"+serviceName+":8080", true)
 			clusterCfg, err := deploy.SyncConfigMapToCluster(deployContext, &cfg)
 			if !util.IsTestMode() {
 				if clusterCfg == nil {
@@ -36,15 +39,16 @@ func Expose(deployContext *deploy.DeployContext, cheHost string, endpointName st
 					return "", false, err
 				}
 			}
-			if err := deploy.DeleteIngressIfExists(endpointName, deployContext); !util.IsTestMode() && err != nil {
+			if err := deploy.DeleteIngressIfExists(serviceName, deployContext); !util.IsTestMode() && err != nil {
 				logrus.Error(err)
 			}
 		} else {
 			additionalLabels := deployContext.CheCluster.Spec.Server.PluginRegistryIngress.Labels
-			ingress, err := deploy.SyncIngressToCluster(deployContext, endpointName, domain, endpointName, 8080, additionalLabels)
+			//TODO Set custom path
+			ingress, err := deploy.SyncIngressToCluster(deployContext, serviceName, domain, serviceName, 8080, additionalLabels)
 			if !util.IsTestMode() {
 				if ingress == nil {
-					logrus.Infof("Waiting on ingress '%s' to be ready", endpointName)
+					logrus.Infof("Waiting on ingress '%s' to be ready", serviceName)
 					if err != nil {
 						logrus.Error(err)
 					}
@@ -57,7 +61,7 @@ func Expose(deployContext *deploy.DeployContext, cheHost string, endpointName st
 		}
 	} else {
 		if useGateway {
-			cfg := gateway.GetGatewayRouteConfig(deployContext, gatewayConfig, "/"+endpointName, 10, "http://"+endpointName+":8080", true)
+			cfg := gateway.GetGatewayRouteConfig(deployContext, gatewayConfig, "/"+host, 10, "http://"+serviceName+":8080", true)
 			clusterCfg, err := deploy.SyncConfigMapToCluster(deployContext, &cfg)
 			if !util.IsTestMode() {
 				if clusterCfg == nil {
@@ -67,16 +71,16 @@ func Expose(deployContext *deploy.DeployContext, cheHost string, endpointName st
 					return "", false, err
 				}
 			}
-			if err := deploy.DeleteRouteIfExists(endpointName, deployContext); !util.IsTestMode() && err != nil {
+			if err := deploy.DeleteRouteIfExists(serviceName, deployContext); !util.IsTestMode() && err != nil {
 				logrus.Error(err)
 			}
 		} else {
 			// the empty string for a host is intentional here - we let OpenShift decide on the hostname
 			additionalLabels := deployContext.CheCluster.Spec.Server.PluginRegistryIngress.Labels
-			route, err := deploy.SyncRouteToCluster(deployContext, endpointName, "", endpointName, 8080, additionalLabels)
+			route, err := deploy.SyncRouteWithPathToCluster(deployContext, serviceName, host, path, serviceName, 8080, additionalLabels)
 			if !util.IsTestMode() {
 				if route == nil {
-					logrus.Infof("Waiting on route '%s' to be ready", endpointName)
+					logrus.Infof("Waiting on route '%s' to be ready", serviceName)
 					if err != nil {
 						logrus.Error(err)
 					}

@@ -146,7 +146,7 @@
       "program": "${file}",
       "env": {
         "MOCK_API": true
-      },
+      }
     },
     {
       "useApiV1": false,

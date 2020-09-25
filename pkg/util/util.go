@@ -190,6 +190,9 @@ func IsTestMode() (isTesting bool) {
 }
 
 func GetClusterPublicHostname(isOpenShift4 bool) (hostname string, err error) {
+	if true {
+		return "https://api.crc.testing:6443", nil
+	}
 	if isOpenShift4 {
 		return getClusterPublicHostnameForOpenshiftV4()
 	} else {

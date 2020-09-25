@@ -17,9 +17,9 @@ metadata:
 spec:
   server:
     # server image used in Che deployment
-    cheImage: ''
+    cheImage: 'sleshchenko/che-server'
     # tag of an image used in Che deployment
-    cheImageTag: ''
+    cheImageTag: 'cut-dashboard'
     # image:tag used in Devfile registry deployment
     devfileRegistryImage: ''
     # image:tag used in plugin registry deployment
@@ -49,9 +49,9 @@ spec:
     # a list of non-proxy hosts. Use | as delimiter, eg localhost|my.host.com|123.42.12.32
     nonProxyHosts: ''
     # sets mem request for server deployment. Defaults to 512Mi
-    serverMemoryRequest: ''
+    serverMemoryRequest: '256Mi'
     # sets mem limit for server deployment. Defaults to 1Gi
-    serverMemoryLimit: ''
+    serverMemoryLimit: '512Mi'
     # sets default namespace where new workspaces will be created
     workspaceNamespaceDefault: ''
     # defines if user is able to specify namespace different from the default

@@ -116,7 +116,7 @@ func getSpecPostgresDeployment(deployContext *deploy.DeployContext, clusterDeplo
 									corev1.ResourceMemory: resource.MustParse("512Mi"),
 								},
 								Limits: corev1.ResourceList{
-									corev1.ResourceMemory: resource.MustParse("1Gi"),
+									corev1.ResourceMemory: resource.MustParse("756Mi"),
 								},
 							},
 							VolumeMounts: []corev1.VolumeMount{
